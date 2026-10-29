@@ -541,7 +541,7 @@ function Portal() {
           <Link to="/" className="brand">
             <span className="brand-mark">S</span>
             <span>
-              Student<span className="brand-accent">Internship Portal</span>
+              Student <span className="brand-accent">Internship Portal</span>
             </span>
           </Link>
 
