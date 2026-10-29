@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom';
 import './App.css';
 
-const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 function InternshipList() {
   const [internships, setInternships] = useState([]);
@@ -25,12 +25,8 @@ function InternshipList() {
         return response.json();
       })
       .then(setInternships)
-      .catch(() => setError('Unable to load internships. Please try again.'));
-    // Always stop the loading indicator, including after errors.
-  }, []);
-
-  useEffect(() => {
-    // Loading is controlled by the request below.
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, []);
 
   const locations = [
@@ -40,7 +36,6 @@ function InternshipList() {
 
   const filteredInternships = internships.filter((item) => {
     const query = searchTerm.toLowerCase().trim();
-
     const matchesSearch =
       !query ||
       [item.title, item.company, item.description, ...(item.skills || [])]
@@ -267,7 +262,8 @@ function InternshipDetails() {
         return response.json();
       })
       .then(setInternship)
-      .catch(() => setError('Unable to load this internship.'));
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
   }, [id]);
 
   async function handleSubmit(event) {
@@ -364,7 +360,7 @@ function InternshipDetails() {
 
         <h3>Skills you'll work with</h3>
         <div className="skills">
-          {(internship.skills || []).map((skill) => (
+          {internship.skills.map((skill) => (
             <span className="skill" key={skill}>{skill}</span>
           ))}
         </div>
@@ -542,10 +538,10 @@ function Portal() {
     <>
       <header className="site-header">
         <div className="header-inner">
-          <Link to="/" className="brand" aria-label="Student Internship Portal home">
+          <Link to="/" className="brand">
             <span className="brand-mark">S</span>
             <span>
-              Student Internship <span className="brand-accent">Portal</span>
+              Student<span className="brand-accent">Internship Portal</span>
             </span>
           </Link>
 
@@ -568,10 +564,10 @@ function Portal() {
       </Routes>
 
       <footer className="site-footer">
-        <Link to="/" className="brand" aria-label="Student Internship Portal home">
+        <Link to="/" className="brand">
           <span className="brand-mark">S</span>
           <span>
-            Student Internship <span className="brand-accent">Portal</span>
+            Student <span className="brand-accent">Internship Portal</span>
           </span>
         </Link>
         <p>Connecting students with opportunities to grow.</p>
